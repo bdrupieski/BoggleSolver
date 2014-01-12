@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BoggleSolver
 {
@@ -40,23 +42,17 @@ namespace BoggleSolver
 
         public IEnumerable<string> FindWords()
         {
-            var foundWords = new List<string>();
+            var foundWords = new ConcurrentBag<string>();
 
-            for (int z = 0; z <= MaxZ; z++)
-            {
-                for (int y = 0; y <= MaxY; y++)
-                {
-                    for (int x = 0; x <= MaxX; x++)
-                    {
-                        FindWordsFromPoint(foundWords, new HashSet<Point>(), new Point(x, y, z), "");
-                    }
-                }
-            }
+            Parallel.For(0, MaxZ + 1, (z) =>
+                Parallel.For(0, MaxY + 1, (y) =>
+                    Parallel.For(0, MaxX + 1, (x) =>
+                        FindWordsFromPoint(foundWords, new HashSet<Point>(), new Point(x, y, z), ""))));
 
             return foundWords.Distinct();
         }
 
-        private void FindWordsFromPoint(List<string> foundWords, HashSet<Point> visitedPoints, Point currentPoint, string prefix)
+        private void FindWordsFromPoint(ConcurrentBag<string> foundWords, HashSet<Point> visitedPoints, Point currentPoint, string prefix)
         {
             string currentPrefix = prefix + _board[currentPoint.Z][currentPoint.Y][currentPoint.X];
 
