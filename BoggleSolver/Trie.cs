@@ -46,59 +46,42 @@ namespace BoggleSolver
 
         public bool ContainsWord(string wordToFind)
         {
-            Trie currentNode = this;
-
-            foreach (var c in wordToFind)
-            {
-                if (currentNode._node.ContainsKey(c))
-                {
-                    currentNode = currentNode._node[c];
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            return currentNode.IsTerminal;
+            Trie lastNode = FindLastNodeIfExists(wordToFind);
+            return lastNode != null && lastNode.IsTerminal;
         }
 
         public bool ContainsPrefix(string prefixToFind)
         {
+            return FindLastNodeIfExists(prefixToFind) != null;
+        }
+
+        private Trie FindLastNodeIfExists(string word)
+        {
             Trie currentNode = this;
 
-            foreach (var c in prefixToFind)
+            foreach (var c in word)
             {
-                if (currentNode._node.ContainsKey(c))
+                if (!currentNode._node.TryGetValue(c, out currentNode))
                 {
-                    currentNode = currentNode._node[c];
-                }
-                else
-                {
-                    return false;
+                    return null;
                 }
             }
 
-            return true;
+            return currentNode;
         }
 
         public override string ToString()
         {
-            return PrintTrie(this);
-        }
-
-        private string PrintTrie(Trie root)
-        {
-            if (root == null)
+            if (_node == null)
             {
                 return TerminalChar.ToString();
             }
 
             var sb = new StringBuilder();
 
-            foreach (char c in root._node.Keys)
+            foreach (char c in _node.Keys)
             {
-                sb.Append("{" + c + " : " + PrintTrie(root._node[c]) + "}");
+                sb.Append("{" + c + " : " + _node[c]+ "}");
             }
 
             return sb.ToString();
