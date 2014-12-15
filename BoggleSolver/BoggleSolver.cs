@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BoggleSolver
@@ -44,9 +45,9 @@ namespace BoggleSolver
         {
             var foundWords = new ConcurrentBag<string>();
 
-            Parallel.For(0, MaxZ + 1, (z) =>
-                Parallel.For(0, MaxY + 1, (y) =>
-                    Parallel.For(0, MaxX + 1, (x) =>
+            Parallel.For(0, MaxZ + 1, z =>
+                Parallel.For(0, MaxY + 1, y =>
+                    Parallel.For(0, MaxX + 1, x =>
                         FindWordsFromPoint(foundWords, new HashSet<Point>(), new Point(x, y, z), ""))));
 
             return foundWords.Distinct();
@@ -134,20 +135,24 @@ namespace BoggleSolver
                 };
         }
 
-        public void DisplayBoard()
+        public string GetBoardRepresentation()
         {
+            var sb = new StringBuilder();
+
             foreach (char[][] plane in _board)
             {
                 foreach (char[] row in plane)
                 {
                     foreach (char c in row)
                     {
-                        Console.Write(c + " ");
+                        sb.Append(c + " ");
                     }
-                    Console.WriteLine();
+                    sb.AppendLine();
                 }
-                Console.WriteLine();
+                sb.AppendLine();
             }
+
+            return sb.ToString();
         }
 
     }

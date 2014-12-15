@@ -14,7 +14,7 @@ namespace BoggleSolver
             var solver = new BoggleSolver(lotsOfWords);
 
             Console.WriteLine("Board:");
-            solver.DisplayBoard();
+            Console.WriteLine(solver.GetBoardRepresentation());
 
             var sw = Stopwatch.StartNew();
             var foundWords = solver.FindWords().ToList();

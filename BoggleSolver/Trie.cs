@@ -81,7 +81,7 @@ namespace BoggleSolver
 
             foreach (char c in _node.Keys)
             {
-                sb.Append("{" + c + " : " + _node[c]+ "}");
+                sb.Append("{" + c + " : " + _node[c] + "}");
             }
 
             return sb.ToString();
